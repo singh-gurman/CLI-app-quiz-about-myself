@@ -1,29 +1,40 @@
 //Dependencies
 var readlineSync = require("readline-sync");
+const chalk = require("chalk");
 
-//Quiz
-var userName = readlineSync.question("Enter your name: ");
+//Theme using Chalk
+const wrongAnswer = chalk.red.bold.underline.bgBlack;
+const rightAnswer = chalk.green.bold.underline.bgBlack;
+const questionColor = chalk.cyan.bold.bgBlack;
+const otherInfoColor = chalk.black.bold.bgWhite.underline;
+const infoColor = chalk.white.bold.bgBlack.underline.italic;
+const scoreLowColor = chalk.black.bold.bgRed.underline;
+const scoreHighColor = chalk.black.bold.bgGreen.underline;
+const scoreMidColor = chalk.black.bold.bgYellow.underline;
+
+//Intro
+var userName = readlineSync.question(infoColor("Enter your name: "));
 var score = 0;
-console.log("************************");
-console.log("Welcome to the quiz " + userName.toUpperCase());
+console.log("-----------------------------");
+console.log(".............................");
+console.log(otherInfoColor("Welcome to the quiz " + userName.toUpperCase()));
 console.log("-----------------------");
-console.log("Lets check how well you know GURMAN!..");
-console.log("Provide your answers in 1 word!..");
+console.log(infoColor("Lets check how well you know GURMAN!.."));
 console.log(".......................");
 
-var highScores = ["10/10 - Gurman himself!", "Next best HIGHSCORE goes here! "];
-
+//function for asking question, checking answer and incrementing score
 function quiz(question, answer) {
-  var userAnswer = readlineSync.question(question);
+  var userAnswer = readlineSync.question(questionColor(question));
   if (userAnswer.toUpperCase() === answer.toUpperCase()) {
-    console.log("You're Correct!");
+    console.log(rightAnswer("You're Correct!"));
     score == score++;
-    console.log("Your score is now", score);
+    console.log(infoColor("Your score is now", score));
   } else {
-    console.log("You're Wrong!");
+    console.log(wrongAnswer("You're Wrong!"));
   }
 }
 
+//List of questions(array of objects)
 var questionsList = [
   {
     question: "How old is Gurman? ",
@@ -54,8 +65,8 @@ var questionsList = [
     answer: "harsh",
   },
   {
-    question: "What movie/tv series universe does he love most? ",
-    answer: "star wars",
+    question: "Which city/town did he study in till 10th class? ",
+    answer: "nakodar",
   },
   {
     question: "Which one of DC or Marvel does he prefer? ",
@@ -67,25 +78,81 @@ var questionsList = [
   },
 ];
 
-for (var i = 0; i < questionsList.length; i++) {
-  var questionCurrent = questionsList[i];
-  quiz(questionCurrent.question, questionCurrent.answer);
-  console.log("-..............-");
+//function looping through the quiz questions
+function quizLoop() {
+  for (var i = 0; i < questionsList.length; i++) {
+    var questionCurrent = questionsList[i];
+    quiz(questionCurrent.question, questionCurrent.answer);
+    console.log("-..............-");
+  }
 }
+//calling the above function
+quizLoop();
 
-console.log("Your final score is:", score, ":)");
-console.log("-----------------------------");
-
+//checking the final score and giving bgColor accordingly (green = full, 6-9 = yellow , <6 = red)
 if (score === 10) {
-  console.log("You scored full! , you and Gurman must be really close!");
   console.log(
-    "Send a screenshot of your score to Gurman to see it in the high-scores list below!"
+    infoColor("Your final score is:"),
+    scoreHighColor(score + "/10"),
+    ":)"
+  );
+  console.log("-----------------------------");
+  console.log(
+    scoreHighColor("You scored full! , you and Gurman must be really close!..")
   );
 } else if (score >= 6) {
-  console.log("WOW! - you know Gurman well...");
+  console.log(
+    infoColor("Your final score is:"),
+    scoreMidColor(score + "/10"),
+    ":)"
+  );
+  console.log("-----------------------------");
+  console.log(scoreMidColor("WOW! - you know Gurman well.."));
 } else {
-  console.log("Your score is LOW :( , you should catch up with Gurman! ");
+  console.log(
+    infoColor("Your final score is:", scoreLowColor(score + "/10"), ":)")
+  );
+  console.log("-----------------------------");
+  console.log(
+    scoreLowColor("Your score is LOW :( , you should catch up with Gurman!..")
+  );
 }
 console.log("-----------------------------");
 console.log(".............................");
-console.log(highScores);
+
+//list of highScorers with their highScores
+var highScorerList = [
+  {
+    name: "Amanjit",
+    score: 10,
+  },
+  {
+    name: "Harsh",
+    score: 9,
+  },
+];
+
+//function to print all highScores
+function highScores() {
+  console.log(scoreHighColor("High Scores:"));
+  for (var i = 0; i < highScorerList.length; i++) {
+    console.log(
+      infoColor(highScorerList[i].name, "-", highScorerList[i].score)
+    );
+  }
+}
+//calling the above function
+highScores();
+
+console.log("-----------------------------");
+console.log(".............................");
+console.log(
+  otherInfoColor(
+    "To get your score added to the High Scores List, send a screenshot of your score to me!.."
+  )
+);
+console.log(".............................");
+
+//The Outro
+console.log(infoColor("Press RUN to take the Quiz again!"));
+console.log(infoColor(".......THE END......."));
